@@ -1,0 +1,32 @@
+[
+  {
+    "file": "docs/feishou_design_v1.docx",
+    "title": "飞售零售管理系统建设方案",
+    "code": 200,
+    "id": 432
+  },
+  {
+    "file": "docs/feishou_api_v1.docx",
+    "title": "飞售零售管理系统 REST 接口契约",
+    "code": 200,
+    "id": 433
+  },
+  {
+    "file": "docs/feishou_test_v1.docx",
+    "title": "飞售零售管理系统测试报告",
+    "code": 200,
+    "id": 434
+  },
+  {
+    "file": "docs/feishou_manual_v1.docx",
+    "title": "飞售零售管理系统使用手册",
+    "code": 200,
+    "id": 435
+  },
+  {
+    "file": "demo/飞售零售管理系统Demo.zip",
+    "title": "飞售零售管理系统离线演示（DEMO）",
+    "code": 200,
+    "id": 436
+  }
+]
