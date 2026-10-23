@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>飞育教育管理系统 · 离线演示</title>
+<style>
+/* 飞育教育管理系统 · 样式 */
+:root {
+  --pri: #ea580c;
+  --pri-d: #16389f;
+  --bg: #f4f6fb;
+  --card: #fff;
+  --line: #e3e8f2;
+  --txt: #1a2333;
+  --sub: #7684a0;
+  --ok: #ea580c;
+  --warn: #d99b0b;
+  --err: #cf2f4b;
+  --side: #101a33;
+  --side-2: #1b2b52;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font: 14px/1.6 -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: var(--txt);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+a { color: var(--pri); text-decoration: none; }
+
+/* ---------- 侧边栏 ---------- */
+#sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 200px;
+  background: var(--side); color: #c5cfdf; display: flex; flex-direction: column;
+  z-index: 20;
+}
+.brand {
+  padding: 18px 18px 4px; font-size: 18px; font-weight: 700; color: #fff;
+  letter-spacing: 1px;
+}
+.brand-sub { padding: 0 18px 14px; font-size: 11.5px; color: #7d8aa5; }
+#nav { flex: 1; overflow-y: auto; padding: 4px 8px; }
+#nav a {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px; margin: 1px 0;
+  color: #b9c5da; border-radius: 7px; font-size: 13.5px; position: relative;
+}
+#nav a .ic { width: 18px; text-align: center; font-size: 14px; }
+#nav a:hover { background: var(--side-2); color: #fff; }
+#nav a.on { background: var(--pri); color: #fff; }
+#nav a .badge {
+  margin-left: auto; background: var(--err); color: #fff; font-size: 11px;
+  min-width: 18px; height: 18px; line-height: 18px; text-align: center;
+  border-radius: 9px; padding: 0 5px; font-weight: 600;
+}
+#nav a.on .badge { background: rgba(255,255,255,.28); }
+.side-foot {
+  padding: 12px 14px; border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.side-foot span { color: #8ba3a6; flex: 1; min-width: 80px; }
+
+/* ---------- 主区 ---------- */
+#main {
+  margin-left: 200px; padding: 20px 24px 48px; min-height: 100vh;
+}
+h2.page { font-size: 19px; margin: 0 0 4px; font-weight: 650; }
+.page-desc { color: var(--sub); font-size: 12.5px; margin-bottom: 14px; }
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px 18px; margin-bottom: 14px;
+}
+.card h3 {
+  margin: 0 0 12px; font-size: 14.5px; font-weight: 650; display: flex;
+  align-items: center; gap: 8px;
+}
+.card h3 .sub { font-weight: 400; font-size: 12px; color: var(--sub); margin-left: auto; }
+
+/* ---------- KPI ---------- */
+.kpis { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.kpi {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 18px; min-width: 130px; flex: 1;
+}
+.kpi b { display: block; font-size: 23px; font-weight: 700; line-height: 1.25; }
+.kpi span { font-size: 12.5px; color: var(--sub); }
+.kpi.ok b { color: var(--ok); }
+.kpi.warn b { color: var(--warn); }
+.kpi.err b { color: var(--err); }
+.kpi.pri b { color: var(--pri); }
+
+/* ---------- 工具条 ---------- */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.btn {
+  border: 0; background: var(--pri); color: #fff; padding: 7px 14px;
+  border-radius: 7px; font-size: 13px; cursor: pointer; font-family: inherit;
+  transition: background .15s;
+}
+.btn:hover { background: var(--pri-d); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.ghost { background: #eaf0f1; color: var(--txt); }
+.btn.ghost:hover { background: #dfe8e9; }
+.btn.danger { background: var(--err); }
+.btn.ok { background: var(--ok); }
+.btn.sm { padding: 4px 10px; font-size: 12px; }
+
+input, select, textarea {
+  font-family: inherit; font-size: 13px; padding: 7px 10px;
+  border: 1px solid var(--line); border-radius: 7px; background: #fff;
+  color: var(--txt); outline: none; max-width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--pri); }
+textarea { resize: vertical; min-height: 84px; width: 100%; }
+
+/* ---------- 表格 ---------- */
+.tw { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td {
+  text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+th { color: var(--sub); font-weight: 600; font-size: 12.5px; background: #f9fbfb; }
+tbody tr:hover { background: #f6faf9; }
+tr.click { cursor: pointer; }
+td.wrap { white-space: normal; min-width: 180px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.tag {
+  display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px;
+  background: #eaf0f1; color: var(--sub);
+}
+.tag.ok { background: #e6f7ec; color: var(--ok); }
+.tag.warn { background: #fff5e0; color: var(--warn); }
+.tag.err { background: #fdedf0; color: var(--err); }
+.tag.pri { background: #e3f4f2; color: var(--pri); }
+
+.empty { color: var(--sub); text-align: center; padding: 44px 12px; font-size: 13px; }
+
+/* ---------- 表单 ---------- */
+.fld { display: block; margin-bottom: 12px; }
+.fld > span { display: block; font-size: 12.5px; color: var(--sub); margin-bottom: 5px; }
+.fld input, .fld select, .fld textarea { width: 100%; }
+.fld i { display: block; font-size: 11.5px; color: var(--sub); font-style: normal; margin-top: 3px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 14px; }
+
+/* ---------- 进度条 ---------- */
+.bar { background: #eaf0f1; border-radius: 5px; height: 9px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--pri); border-radius: 5px; }
+.bar i.warn { background: var(--warn); }
+.bar i.err { background: var(--err); }
+.bar i.ok { background: var(--ok); }
+
+/* ---------- 竖向柱状图 ---------- */
+.chart { display: flex; align-items: flex-end; gap: 10px; height: 190px; padding: 6px 0 0; }
+.chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+  align-items: center; gap: 4px; min-width: 0; }
+.chart .col .bars { display: flex; gap: 3px; align-items: flex-end; height: 150px; }
+.chart .col .bars i { width: 14px; border-radius: 3px 3px 0 0; background: var(--pri);
+  display: block; min-height: 2px; }
+.chart .col .bars i.b2 { background: #9ecfc9; }
+.chart .col .lb { font-size: 11.5px; color: var(--sub); white-space: nowrap; }
+.chart .col .vv { font-size: 11px; color: var(--txt); }
+
+/* ---------- 横向条形排行 ---------- */
+.rank { display: flex; flex-direction: column; gap: 9px; }
+.rank .r { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.rank .r .n { width: 128px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank .r .b { flex: 1; }
+.rank .r .v { width: 96px; text-align: right; color: var(--sub);
+  font-variant-numeric: tabular-nums; }
+
+/* ---------- 时间线 ---------- */
+.tl { position: relative; padding-left: 22px; }
+.tl:before {
+  content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--line);
+}
+.tl-item { position: relative; padding: 0 0 16px; }
+.tl-item:before {
+  content: ''; position: absolute; left: -20px; top: 5px; width: 10px; height: 10px;
+  border-radius: 50%; background: #fff; border: 2px solid var(--pri);
+}
+.tl-item.pass:before { border-color: var(--ok); }
+.tl-item.reject:before { border-color: var(--err); }
+.tl-item .t { font-size: 11.5px; color: var(--sub); }
+.tl-item .h { font-weight: 600; font-size: 13.5px; margin: 1px 0; }
+.tl-item .d { color: var(--sub); font-size: 12.5px; }
+
+/* ---------- 风险卡片 ---------- */
+.risk-list { display: flex; flex-direction: column; gap: 10px; }
+.risk-item {
+  background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+  border-radius: 9px; padding: 12px 16px;
+}
+.risk-item.lv-hi { border-left-color: var(--err); }
+.risk-item.lv-mid { border-left-color: var(--warn); }
+.risk-item.lv-lo { border-left-color: #9ecfc9; }
+.risk-item .h { display: flex; align-items: center; gap: 8px; }
+.risk-item .h b { font-size: 13.5px; }
+.risk-item .d { color: var(--sub); font-size: 12.5px; margin: 4px 0 0; }
+
+/* ---------- 税率卡 ---------- */
+.rate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.rate-card {
+  border: 1px solid var(--line); border-radius: 9px; padding: 12px 14px; background: #fff;
+}
+.rate-card b { display: block; font-size: 20px; color: var(--pri); }
+.rate-card span { font-size: 12px; color: var(--sub); }
+
+/* ---------- 弹层 ---------- */
+.modal-mask {
+  position: fixed; inset: 0; background: rgba(15, 28, 30, .45); z-index: 60;
+  display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px;
+  overflow-y: auto;
+}
+.modal {
+  background: #fff; border-radius: 12px; padding: 20px 22px; width: 520px;
+  max-width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.22);
+}
+.modal.wide { width: 800px; }
+.modal h3 { margin: 0 0 14px; font-size: 16px; }
+.modal .acts { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.hidden { display: none !important; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%);
+  background: #1a2333; color: #fff; padding: 10px 20px; border-radius: 8px;
+  font-size: 13px; z-index: 90; box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  max-width: 80vw;
+}
+
+/* ---------- 结算卡 ---------- */
+.settle {
+  background: linear-gradient(135deg, #c2410c, #3b82f6); color: #fff;
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 14px;
+}
+.settle .row { display: flex; gap: 26px; flex-wrap: wrap; }
+.settle .row > div b { display: block; font-size: 21px; font-weight: 700; }
+.settle .row > div span { font-size: 12px; opacity: .82; }
+.settle .note { margin-top: 10px; font-size: 12px; opacity: .85; }
+
+/* ---------- 登录页 ---------- */
+.login-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #101a33 0%, #1e3a8a 52%, #c2410c 130%);
+  padding: 20px;
+}
+.login-box {
+  background: #fff; border-radius: 14px; padding: 34px 32px; width: 372px;
+  max-width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.login-box h1 { font-size: 21px; margin: 0 0 4px; }
+.login-box p { color: var(--sub); font-size: 12.5px; margin: 0 0 22px; }
+.login-box input { width: 100%; margin-bottom: 12px; padding: 10px 12px; }
+.login-box .btn { width: 100%; padding: 10px; font-size: 14px; margin-top: 6px; }
+.hint { font-size: 11.5px; color: var(--sub); text-align: center; margin-top: 14px;
+  line-height: 1.8; }
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 820px) {
+  #sidebar {
+    position: static; width: auto; flex-direction: row; align-items: center;
+    overflow-x: auto; padding: 0 8px;
+  }
+  .brand { padding: 10px 8px; font-size: 15px; white-space: nowrap; }
+  .brand-sub { display: none; }
+  #nav { display: flex; padding: 6px 0; flex: 1; }
+  #nav a { white-space: nowrap; padding: 6px 10px; }
+  #nav a .ic { display: none; }
+  .side-foot { border: 0; padding: 6px; }
+  .side-foot span { display: none; }
+  #main { margin-left: 0; padding: 14px 12px 40px; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .kpi b { font-size: 20px; }
+  .chart { height: 160px; }
+  .chart .col .bars { height: 120px; }
+}
+
+/* ---------- 飞育扩展 ---------- */
+.sub-cell { font-size: 12px; color: var(--sub); max-width: 280px; white-space: normal; }
+.rowitem { padding: 8px 4px; border-bottom: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.rowitem.hot b { color: var(--err); }
+.rowitem i { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--sub); }
+.rowitem p { width: 100%; margin: 2px 0 0; font-size: 12.5px; color: var(--sub); }
+table.week th { text-align: center; padding: 6px 4px; font-size: 12.5px; }
+table.week td { border: 1px solid var(--line); padding: 3px; vertical-align: top; height: 46px; }
+.slot b { display: block; font-size: 12px; color: var(--pri); }
+.slot i { font-style: normal; font-size: 11px; color: var(--sub); }
+.card.hot { border-color: #f3c1cb; background: #fff7f8; }
+select, input[type=number] { margin-left: 6px; }
+
+.pos-sum{font-size:15px;font-weight:600;color:#ea580c;padding:8px 4px;}
+
+
+.demo-bar{position:fixed;left:0;right:0;top:0;z-index:99;background:#fff8e6;color:#7a5b12;
+  border-bottom:1px solid #f0d9a8;font-size:12.5px;padding:7px 16px;text-align:center;
+  box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.demo-bar b{color:#b8791b}
+.demo-bar .who{margin-left:12px;padding-left:12px;border-left:1px solid #f0d9a8}
+.demo-bar select{font-size:12.5px;padding:2px 6px;border:1px solid #e0c98f;border-radius:4px;
+  background:#fff;color:#7a5b12}
+body{padding-top:34px}
+
+</style>
+</head>
+<body>
+  <div id="sidebar">
+    <div class="brand">🗂️ 飞效OA</div>
+    <div class="brand-sub">学籍 · 成绩 · 考勤 · 缴费</div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <span id="who"></span>
+      <button id="btn-logout" class="btn ghost sm">退出</button>
+    </div>
+  </div>
+  <main id="main"><div class="empty">加载中…</div></main>
+  <div id="modal-mask" class="modal-mask hidden"><div id="modal" class="modal"></div></div>
+  <div id="toast" class="toast hidden"></div>
+<script>var PREFIX = '';</script>
+<script>
+
+/* ============ 离线演示运行时：拦截 fetch 改读快照 ============ */
+var SNAP = {"/api/me":{"user":{"id":1,"username":"admin","name":"系统管理员","role":"admin"},"perms":"*"},"/api/dashboard":{"date":"2026-10-23","sales_today":1,"income_cents":1215,"members":4,"pending_purchase":0,"low_stock":0,"near_expiry":0,"active_promotions":2,"open_risks":0},"/api/notices":{"items":[{"id":1,"title":"欢迎使用飞售零售管理系统","content":"系统已上线演示环境，请使用 admin/123456 登录体验。","level":"info","created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/sales":{"items":[{"id":1,"no":"XS20260101-001","store_id":1,"member_id":1,"subtotal_cents":1350,"promo_off_cents":0,"member_off_cents":135,"paid_cents":1215,"pay_method":"wechat","received_cents":1215,"points":121,"status":"paid","version":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/users":{"items":[{"id":1,"username":"admin","name":"系统管理员","role":"admin","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"},{"id":2,"username":"lim","name":"李明","role":"manager","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"},{"id":3,"username":"wangn","name":"王妮","role":"cashier","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"},{"id":4,"username":"chenyf","name":"陈永发","role":"warehouse","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"},{"id":5,"username":"liug","name":"刘光","role":"member_admin","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"},{"id":6,"username":"reader01","name":"只读账号","role":"reader","phone":null,"status":1,"created_at":"2026-10-23 16:59:11"}],"total":6,"page":1,"size":20},"/api/api-keys":{"items":[],"total":0,"page":1,"size":20},"/api/stores":{"items":[{"id":1,"code":"S001","name":"旗舰店（中心广场）","address":"幸福路1号中心广场","phone":"0571-88880001","status":"active","created_at":"2026-10-23 16:59:11"},{"id":2,"code":"S002","name":"城东店","address":"城东大道88号","phone":"0571-88880002","status":"active","created_at":"2026-10-23 16:59:11"},{"id":3,"code":"S003","name":"大学城店","address":"文华路学府街口","phone":"0571-88880003","status":"active","created_at":"2026-10-23 16:59:11"}],"total":3,"page":1,"size":20},"/api/stores?keyword=旗":{"items":[{"id":1,"code":"S001","name":"旗舰店（中心广场）","address":"幸福路1号中心广场","phone":"0571-88880001","status":"active","created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/commodities":{"items":[{"id":1,"sku":"SP0001","barcode":"6901234500011","name":"可口可乐330ml","unit":"罐","category":"饮料","price_cents":350,"cost_cents":220,"shelf_life_days":270,"safe_stock":50,"status":"active","created_at":"2026-10-23 16:59:11","stock":298},{"id":2,"sku":"SP0002","barcode":"6901234500028","name":"农夫山泉550ml","unit":"瓶","category":"饮料","price_cents":200,"cost_cents":120,"shelf_life_days":270,"safe_stock":60,"status":"active","created_at":"2026-10-23 16:59:11","stock":270},{"id":3,"sku":"SP0003","barcode":"6901234500035","name":"乐事薯片原味","unit":"袋","category":"零食","price_cents":650,"cost_cents":400,"shelf_life_days":180,"safe_stock":30,"status":"active","created_at":"2026-10-23 16:59:11","stock":59},{"id":4,"sku":"SP0004","barcode":"6901234500042","name":"康师傅红烧牛肉面","unit":"桶","category":"食品","price_cents":450,"cost_cents":280,"shelf_life_days":180,"safe_stock":40,"status":"active","created_at":"2026-10-23 16:59:11","stock":100},{"id":5,"sku":"SP0005","barcode":"6901234500059","name":"蒙牛纯牛奶250ml","unit":"盒","category":"乳品","price_cents":300,"cost_cents":200,"shelf_life_days":90,"safe_stock":30,"status":"active","created_at":"2026-10-23 16:59:11","stock":40},{"id":6,"sku":"SP0006","barcode":"6901234500066","name":"飞售纸巾抽装","unit":"包","category":"日化","price_cents":250,"cost_cents":140,"shelf_life_days":720,"safe_stock":40,"status":"active","created_at":"2026-10-23 16:59:11","stock":80},{"id":7,"sku":"SP0007","barcode":"6901234500073","name":"士力架花生夹心","unit":"支","category":"零食","price_cents":500,"cost_cents":320,"shelf_life_days":240,"safe_stock":25,"status":"active","created_at":"2026-10-23 16:59:11","stock":8},{"id":8,"sku":"SP0008","barcode":"6901234500080","name":"海飞丝洗发水","unit":"瓶","category":"日化","price_cents":2990,"cost_cents":1900,"shelf_life_days":720,"safe_stock":10,"status":"active","created_at":"2026-10-23 16:59:11","stock":6}],"total":8,"page":1,"size":20},"/api/commodities/barcode/6901234500011":{"id":1,"sku":"SP0001","barcode":"6901234500011","name":"可口可乐330ml","unit":"罐","category":"饮料","price_cents":350,"cost_cents":220,"shelf_life_days":270,"safe_stock":50,"status":"active","created_at":"2026-10-23 16:59:11","stock":298},"/api/commodities/1":{"id":1,"sku":"SP0001","barcode":"6901234500011","name":"可口可乐330ml","unit":"罐","category":"饮料","price_cents":350,"cost_cents":220,"shelf_life_days":270,"safe_stock":50,"status":"active","created_at":"2026-10-23 16:59:11","batches":[{"id":1,"store_id":1,"commodity_id":1,"batch_no":"B2026A01","qty":198,"expire_at":"2027-02-20","version":1,"created_at":"2026-10-23 16:59:11"},{"id":9,"store_id":2,"commodity_id":1,"batch_no":"B2026B01","qty":100,"expire_at":"2027-04-21","version":1,"created_at":"2026-10-23 16:59:11"}]},"/api/members":{"items":[{"id":4,"code":"M0004","name":"赵六","phone":"13800000004","level":"platinum","points":25600,"balance_cents":50000,"status":"active","created_at":"2026-10-23 16:59:11"},{"id":3,"code":"M0003","name":"王强","phone":"13800000003","level":"normal","points":800,"balance_cents":0,"status":"active","created_at":"2026-10-23 16:59:11"},{"id":2,"code":"M0002","name":"李娜","phone":"13800000002","level":"silver","points":4200,"balance_cents":5000,"status":"active","created_at":"2026-10-23 16:59:11"},{"id":1,"code":"M0001","name":"张伟","phone":"13800000001","level":"gold","points":12800,"balance_cents":20000,"status":"active","created_at":"2026-10-23 16:59:11"}],"total":4,"page":1,"size":20},"/api/members?level=gold":{"items":[{"id":1,"code":"M0001","name":"张伟","phone":"13800000001","level":"gold","points":12800,"balance_cents":20000,"status":"active","created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/members/1":{"id":1,"code":"M0001","name":"张伟","phone":"13800000001","level":"gold","points":12800,"balance_cents":20000,"status":"active","created_at":"2026-10-23 16:59:11","discount_rate":0.9},"/api/members/1/txns":{"items":[{"id":1,"member_id":1,"ttype":"earn","points_delta":121,"amount_cents":1215,"note":"消费积分 XS20260101-001","ref_id":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/members/1/sales":{"items":[{"id":1,"no":"XS20260101-001","store_id":1,"member_id":1,"subtotal_cents":1350,"promo_off_cents":0,"member_off_cents":135,"paid_cents":1215,"pay_method":"wechat","received_cents":1215,"points":121,"status":"paid","version":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/promotions":{"items":[{"id":2,"name":"饮料类88折","ptype":"discount","threshold_cents":0,"off_cents":0,"rate":88,"start_date":"2026-01-01","end_date":"2027-12-31","store_id":null,"status":"active","created_at":"2026-10-23 16:59:11"},{"id":1,"name":"全场满30减5","ptype":"full_off","threshold_cents":3000,"off_cents":500,"rate":100,"start_date":"2026-01-01","end_date":"2027-12-31","store_id":null,"status":"active","created_at":"2026-10-23 16:59:11"}],"total":2,"page":1,"size":20},"/api/promotions/1":{"id":1,"name":"全场满30减5","ptype":"full_off","threshold_cents":3000,"off_cents":500,"rate":100,"start_date":"2026-01-01","end_date":"2027-12-31","store_id":null,"status":"active","created_at":"2026-10-23 16:59:11"},"/api/sales?status=paid":{"items":[{"id":1,"no":"XS20260101-001","store_id":1,"member_id":1,"subtotal_cents":1350,"promo_off_cents":0,"member_off_cents":135,"paid_cents":1215,"pay_method":"wechat","received_cents":1215,"points":121,"status":"paid","version":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/sales?status=refunded":{"items":[],"total":0,"page":1,"size":20},"/api/sales/1":{"id":1,"no":"XS20260101-001","store_id":1,"member_id":1,"subtotal_cents":1350,"promo_off_cents":0,"member_off_cents":135,"paid_cents":1215,"pay_method":"wechat","received_cents":1215,"points":121,"status":"paid","version":1,"created_at":"2026-10-23 16:59:11","items":[{"id":1,"sale_id":1,"commodity_id":1,"commodity_name":"可口可乐330ml","qty":2,"unit_price_cents":350,"cost_cents":220,"amount_cents":700},{"id":2,"sale_id":1,"commodity_id":3,"commodity_name":"乐事薯片原味","qty":1,"unit_price_cents":650,"cost_cents":400,"amount_cents":650}],"store":{"id":1,"code":"S001","name":"旗舰店（中心广场）"},"member":{"id":1,"code":"M0001","name":"张伟","level":"gold"}},"/api/inventory":{"items":[{"id":5,"store_id":1,"commodity_id":5,"batch_no":"B2026A05","qty":40,"expire_at":"2026-12-07","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"蒙牛纯牛奶250ml","sku":"SP0005","safe_stock":30},{"id":3,"store_id":1,"commodity_id":3,"batch_no":"B2026A03","qty":59,"expire_at":"2026-12-22","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"乐事薯片原味","sku":"SP0003","safe_stock":30},{"id":1,"store_id":1,"commodity_id":1,"batch_no":"B2026A01","qty":198,"expire_at":"2027-02-20","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"可口可乐330ml","sku":"SP0001","safe_stock":50},{"id":4,"store_id":1,"commodity_id":4,"batch_no":"B2026A04","qty":100,"expire_at":"2027-03-22","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"康师傅红烧牛肉面","sku":"SP0004","safe_stock":40},{"id":9,"store_id":2,"commodity_id":1,"batch_no":"B2026B01","qty":100,"expire_at":"2027-04-21","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"可口可乐330ml","sku":"SP0001","safe_stock":50},{"id":2,"store_id":1,"commodity_id":2,"batch_no":"B2026A02","qty":150,"expire_at":"2027-05-11","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"农夫山泉550ml","sku":"SP0002","safe_stock":60},{"id":10,"store_id":2,"commodity_id":2,"batch_no":"B2026B02","qty":120,"expire_at":"2027-05-31","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"农夫山泉550ml","sku":"SP0002","safe_stock":60},{"id":7,"store_id":1,"commodity_id":7,"batch_no":"B2026A07","qty":8,"expire_at":"2027-06-30","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"士力架花生夹心","sku":"SP0007","safe_stock":25},{"id":6,"store_id":1,"commodity_id":6,"batch_no":"B2026A06","qty":80,"expire_at":"2027-11-27","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"飞售纸巾抽装","sku":"SP0006","safe_stock":40},{"id":8,"store_id":1,"commodity_id":8,"batch_no":"B2026A08","qty":6,"expire_at":"2028-03-06","version":1,"created_at":"2026-10-23 16:59:11","commodity_name":"海飞丝洗发水","sku":"SP0008","safe_stock":10}],"total":10,"page":1,"size":20},"/api/inventory/summary?store_id=1&commodity_id=1":{"commodity_id":1,"store_id":1,"total":198,"batches":[{"batch_no":"B2026A01","qty":198,"expire_at":"2027-02-20","store_id":1}]},"/api/purchases":{"items":[{"id":1,"no":"CG20260101-001","supplier_id":1,"store_id":1,"status":"received","total_cents":22000,"version":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/purchases/1":{"id":1,"no":"CG20260101-001","supplier_id":1,"store_id":1,"status":"received","total_cents":22000,"version":1,"created_at":"2026-10-23 16:59:11","items":[{"id":1,"purchase_id":1,"commodity_id":1,"qty":100,"cost_cents":220,"amount_cents":22000,"batch_no":"B2026A01","expiry":"2027-02-20","commodity_name":"可口可乐330ml"}],"supplier":{"name":"华东饮品供应链","phone":"13900000001"}},"/api/suppliers":{"items":[{"id":1,"name":"华东饮品供应链","contact":"周经理","phone":"13900000001","credit_days":30,"debt_limit_cents":5000000,"payable_cents":22000,"created_at":"2026-10-23 16:59:11"},{"id":2,"name":"鑫达日用百货","contact":"孙经理","phone":"13900000002","credit_days":15,"debt_limit_cents":2000000,"payable_cents":0,"created_at":"2026-10-23 16:59:11"}],"total":2,"page":1,"size":20},"/api/transactions":{"items":[{"id":1,"ttype":"income","amount_cents":1215,"ref_type":"sale","ref_id":1,"pay_method":"wechat","note":"销售收款 XS20260101-001","version":1,"created_at":"2026-10-23 16:59:11"}],"total":1,"page":1,"size":20},"/api/finance/summary":{"date":"2026-10-23","income_cents":1215,"refund_cents":0,"expense_cents":0,"by_method":{"wechat":1215},"sale_count":1,"member_new":4},"/api/risks":{"items":[{"id":18,"rtype":"expiry_near","ref_id":5,"title":"商品效期预警","detail":"门店 1 蒙牛纯牛奶250ml 批次 B2026A05 效期 2026-12-07，剩余不足 90 天","score":25,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":17,"rtype":"expiry_near","ref_id":3,"title":"商品效期预警","detail":"门店 1 乐事薯片原味 批次 B2026A03 效期 2026-12-22，剩余不足 90 天","score":25,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":16,"rtype":"stock_low","ref_id":300008,"title":"商品低库存","detail":"[大学城店] 海飞丝洗发水 当前库存 0 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":15,"rtype":"stock_low","ref_id":300007,"title":"商品低库存","detail":"[大学城店] 士力架花生夹心 当前库存 0 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":14,"rtype":"stock_low","ref_id":300006,"title":"商品低库存","detail":"[大学城店] 飞售纸巾抽装 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":13,"rtype":"stock_low","ref_id":300005,"title":"商品低库存","detail":"[大学城店] 蒙牛纯牛奶250ml 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":12,"rtype":"stock_low","ref_id":300004,"title":"商品低库存","detail":"[大学城店] 康师傅红烧牛肉面 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":11,"rtype":"stock_low","ref_id":300003,"title":"商品低库存","detail":"[大学城店] 乐事薯片原味 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":10,"rtype":"stock_low","ref_id":300002,"title":"商品低库存","detail":"[大学城店] 农夫山泉550ml 当前库存 0 ≤ 安全库存 60","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":9,"rtype":"stock_low","ref_id":300001,"title":"商品低库存","detail":"[大学城店] 可口可乐330ml 当前库存 0 ≤ 安全库存 50","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":8,"rtype":"stock_low","ref_id":200008,"title":"商品低库存","detail":"[城东店] 海飞丝洗发水 当前库存 0 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":7,"rtype":"stock_low","ref_id":200007,"title":"商品低库存","detail":"[城东店] 士力架花生夹心 当前库存 0 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":6,"rtype":"stock_low","ref_id":200006,"title":"商品低库存","detail":"[城东店] 飞售纸巾抽装 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":5,"rtype":"stock_low","ref_id":200005,"title":"商品低库存","detail":"[城东店] 蒙牛纯牛奶250ml 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":4,"rtype":"stock_low","ref_id":200004,"title":"商品低库存","detail":"[城东店] 康师傅红烧牛肉面 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":3,"rtype":"stock_low","ref_id":200003,"title":"商品低库存","detail":"[城东店] 乐事薯片原味 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":2,"rtype":"stock_low","ref_id":100008,"title":"商品低库存","detail":"[旗舰店（中心广场）] 海飞丝洗发水 当前库存 6 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":1,"rtype":"stock_low","ref_id":100007,"title":"商品低库存","detail":"[旗舰店（中心广场）] 士力架花生夹心 当前库存 8 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"}],"total":18,"page":1,"size":20},"/api/risks?status=open":{"items":[{"id":18,"rtype":"expiry_near","ref_id":5,"title":"商品效期预警","detail":"门店 1 蒙牛纯牛奶250ml 批次 B2026A05 效期 2026-12-07，剩余不足 90 天","score":25,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":17,"rtype":"expiry_near","ref_id":3,"title":"商品效期预警","detail":"门店 1 乐事薯片原味 批次 B2026A03 效期 2026-12-22，剩余不足 90 天","score":25,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":16,"rtype":"stock_low","ref_id":300008,"title":"商品低库存","detail":"[大学城店] 海飞丝洗发水 当前库存 0 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":15,"rtype":"stock_low","ref_id":300007,"title":"商品低库存","detail":"[大学城店] 士力架花生夹心 当前库存 0 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":14,"rtype":"stock_low","ref_id":300006,"title":"商品低库存","detail":"[大学城店] 飞售纸巾抽装 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":13,"rtype":"stock_low","ref_id":300005,"title":"商品低库存","detail":"[大学城店] 蒙牛纯牛奶250ml 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":12,"rtype":"stock_low","ref_id":300004,"title":"商品低库存","detail":"[大学城店] 康师傅红烧牛肉面 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":11,"rtype":"stock_low","ref_id":300003,"title":"商品低库存","detail":"[大学城店] 乐事薯片原味 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":10,"rtype":"stock_low","ref_id":300002,"title":"商品低库存","detail":"[大学城店] 农夫山泉550ml 当前库存 0 ≤ 安全库存 60","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":9,"rtype":"stock_low","ref_id":300001,"title":"商品低库存","detail":"[大学城店] 可口可乐330ml 当前库存 0 ≤ 安全库存 50","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":8,"rtype":"stock_low","ref_id":200008,"title":"商品低库存","detail":"[城东店] 海飞丝洗发水 当前库存 0 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":7,"rtype":"stock_low","ref_id":200007,"title":"商品低库存","detail":"[城东店] 士力架花生夹心 当前库存 0 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":6,"rtype":"stock_low","ref_id":200006,"title":"商品低库存","detail":"[城东店] 飞售纸巾抽装 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":5,"rtype":"stock_low","ref_id":200005,"title":"商品低库存","detail":"[城东店] 蒙牛纯牛奶250ml 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":4,"rtype":"stock_low","ref_id":200004,"title":"商品低库存","detail":"[城东店] 康师傅红烧牛肉面 当前库存 0 ≤ 安全库存 40","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":3,"rtype":"stock_low","ref_id":200003,"title":"商品低库存","detail":"[城东店] 乐事薯片原味 当前库存 0 ≤ 安全库存 30","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":2,"rtype":"stock_low","ref_id":100008,"title":"商品低库存","detail":"[旗舰店（中心广场）] 海飞丝洗发水 当前库存 6 ≤ 安全库存 10","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"},{"id":1,"rtype":"stock_low","ref_id":100007,"title":"商品低库存","detail":"[旗舰店（中心广场）] 士力架花生夹心 当前库存 8 ≤ 安全库存 25","score":30,"grade":"warn","status":"open","resolved_by":null,"note":null,"created_at":"2026-10-23 16:59:12"}],"total":18,"page":1,"size":20},"/api/rules":{"items":[]},"/api/logs":{"items":[{"id":1,"ts":"2026-10-23 16:59:11","user_id":1,"action":"login","detail":"admin","ip":null}],"total":1,"page":1,"size":20},"/api/sync?since=0&entities=commodities":{"version":0,"since":0,"changes":[]}};
+var DEMO_USERS = {"admin":{"user":{"id":1,"username":"admin","name":"系统管理员","role":"admin"},"perms":["*"]},"lim":{"user":{"id":2,"username":"lim","name":"李明","role":"manager"},"perms":["retail.sales.*","retail.commodities.*","retail.members.*","retail.promotions.*","retail.inventory.read","retail.purchases.read","retail.stores.read","retail.risk.read"]},"liug":{"user":{"id":5,"username":"liug","name":"刘光","role":"member_admin"},"perms":["retail.members.*","retail.members.read"]},"reader01":{"user":{"id":6,"username":"reader01","name":"只读账号","role":"reader"},"perms":["retail.sales.read","retail.commodities.read","retail.members.read","retail.inventory.read","retail.purchases.read","retail.promotions.read"]}};
+var DEMO_ME = (function () {
+  var q = (location.search || '') + '&' + (location.hash || '');
+  var m = q.match(/[?&#]as=([\w\-]+)/);
+  var who = m ? decodeURIComponent(m[1]) : '';
+  if (who && DEMO_USERS[who]) return DEMO_USERS[who];
+  try {
+    var saved = sessionStorage.getItem('demo_as');
+    if (saved && DEMO_USERS[saved]) return DEMO_USERS[saved];
+  } catch (e) { /* ignore */ }
+  return {"user":{"id":1,"username":"admin","name":"系统管理员","role":"admin"},"perms":["*"]};
+})();
+
+function normPath(p) {
+  p = String(p || '').replace(PREFIX, '');
+  if (p.charAt(0) !== '/') p = '/' + p;
+  return p;
+}
+function lookup(p) {
+  p = normPath(p);
+  if (p === '/api/me') return DEMO_ME;
+  if (SNAP[p] !== undefined && SNAP[p] !== null) return SNAP[p];
+  var bare = p.split('?')[0];
+  if (SNAP[bare] !== undefined && SNAP[bare] !== null) return SNAP[bare];
+  var fb = [
+    [/^\/api\/stores\?/, '/api/stores'],
+    [/^\/api\/commodities\?/, '/api/commodities'],
+    [/^\/api\/members\?/, '/api/members'],
+    [/^\/api\/promotions\?/, '/api/promotions'],
+    [/^\/api\/sales\?/, '/api/sales'],
+    [/^\/api\/inventory\?/, '/api/inventory'],
+    [/^\/api\/purchases\?/, '/api/purchases'],
+    [/^\/api\/suppliers\?/, '/api/suppliers'],
+    [/^\/api\/transactions\?/, '/api/transactions'],
+    [/^\/api\/risks\?/, '/api/risks'],
+    [/^\/api\/notices\?/, '/api/notices'],
+    [/^\/api\/users\?/, '/api/users'],
+    [/^\/api\/api-keys\?/, '/api/api-keys'],
+    [/^\/api\/sync\?/, '/api/sync?since=0&entities=commodities']
+  ];
+  for (var i = 0; i < fb.length; i++) {
+    if (fb[i][0].test(p)) return SNAP[fb[i][1]] || {};
+  }
+  var m = p.match(/^\/api\/commodities\/barcode\/([0-9Xx]+)$/);
+  if (m) return (SNAP['/api/commodities/barcode/6901234500011'] || {items: []});
+  m = p.match(/^\/api\/members\/(\d+)$/);
+  if (m) return (SNAP['/api/members/1'] || {});
+  m = p.match(/^\/api\/members\/(\d+)\/(txns|sales)$/);
+  if (m) return (SNAP['/api/members/1/' + m[2]] || {items: [], total: 0});
+  m = p.match(/^\/api\/inventory\/summary\?store_id=(\d+)&commodity_id=(\d+)$/);
+  if (m) {
+    var rows = ((SNAP['/api/inventory'] || {}).items || []).filter(function (x) { return x.commodity_id == m[2] && x.store_id == m[1]; });
+    return {commodity_id: Number(m[2]), store_id: Number(m[1]), total: rows.reduce(function (a, b) { return a + b.qty; }, 0), batches: rows};
+  }
+  m = p.match(/^\/api\/commodities\/(\d+)$/);
+  if (m) {
+    var g = ((SNAP['/api/commodities'] || {}).items || []).filter(function (x) { return x.id == m[1]; })[0];
+    if (g) return Object.assign({}, g, {batches: []});
+  }
+  m = p.match(/^\/api\/promotions\/(\d+)$/);
+  if (m) {
+    var pr = ((SNAP['/api/promotions'] || {}).items || []).filter(function (x) { return x.id == m[1]; })[0];
+    if (pr) return pr;
+  }
+  m = p.match(/^\/api\/sales\/(\d+)$/);
+  if (m) {
+    var c = ((SNAP['/api/sales'] || {}).items || []).filter(function (x) { return x.id == m[1]; })[0];
+    if (c) return Object.assign({}, c, {items: []});
+  }
+  m = p.match(/^\/api\/purchases\/(\d+)$/);
+  if (m) {
+    var v = ((SNAP['/api/purchases'] || {}).items || []).filter(function (x) { return x.id == m[1]; })[0];
+    if (v) return Object.assign({}, v, {items: []});
+  }
+  return null;
+}
+
+
+window.fetch = function (url, opt) {
+  var method = (opt && opt.method) || 'GET';
+  var path = String(url).replace(location.origin, '');
+  var status = 200, body;
+  if (method !== 'GET') {
+    body = {code: 200, message: '\u6f14\u793a\u73af\u5883\u53ea\u8bfb\uff0c\u5199\u64cd\u4f5c\u672a\u6267\u884c',
+            data: {}};
+  } else {
+    var data = lookup(path);
+    if (data === null || data === undefined) {
+      body = {code: 200, message: 'ok', data: []};
+    } else {
+      body = {code: 200, message: 'ok', data: data};
+    }
+  }
+  return Promise.resolve({
+    status: status, ok: true,
+    json: function () { return Promise.resolve(body); },
+    text: function () { return Promise.resolve(JSON.stringify(body)); }
+  });
+};
+window.CSV = function () { return Promise.reject(new Error('\u6f14\u793a\u73af\u5883\u4e0d\u652f\u6301\u5bfc\u51fa')); };
+
+try {
+  localStorage.setItem('retail_token', 'demo');
+  localStorage.setItem('retail_user', JSON.stringify(DEMO_ME));
+} catch (e) { /* ignore */ }
+
+window.demoAs = function (who) {
+  var m = DEMO_USERS[who];
+  if (!m) return;
+  try {
+    localStorage.setItem('retail_user', JSON.stringify(m));
+    localStorage.setItem('retail_token', 'demo');
+    sessionStorage.setItem('demo_as', who);
+  } catch (e) { /* ignore */ }
+  location.hash = '#/dash';
+  location.reload();
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+  var bar = document.createElement('div');
+  bar.className = 'demo-bar';
+  var opts = Object.keys(DEMO_USERS).map(function (k) {
+    return '<option value="' + k + '"' + (k === DEMO_ME.user.username ? ' selected' : '') + '>'
+      + DEMO_USERS[k].user.name + '\uff08' + DEMO_USERS[k].user.role + '\uff09</option>';
+  }).join('');
+  bar.innerHTML = '<b>\u79bb\u7ebf\u6f14\u793a</b> \u6570\u636e\u53d6\u81ea\u98de\u552e\u6f14\u793a\u5b9e\u4f8b\u7684\u771f\u5b9e\u5feb\u7167\uff0c\u53ea\u8bfb\u6d4f\u89c8\uff0c\u5199\u64cd\u4f5c\u4e0d\u4f1a\u771f\u6b63\u6267\u884c\u3002'
+    + '<span class="who">\u5f53\u524d\u89c6\u89d2 <select onchange="demoAs(this.value)">' + opts + '</select></span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+});
+
+</script>
+<script>
+/* 飞售零售管理系统 · 框架层 */
+var TOKEN = localStorage.getItem('retail_token') || '';
+var ME = JSON.parse(localStorage.getItem('retail_user') || '{}');
+var PERMS = ME.perms || [];
+
+function api(method, path, body, raw) {
+  return fetch(PREFIX + path, {
+    method: method,
+    headers: Object.assign({'Content-Type': 'application/json'},
+      TOKEN ? {Authorization: 'Bearer ' + TOKEN} : {}),
+    body: (method === 'POST' || method === 'PUT' || method === 'DELETE') ? JSON.stringify(body || {}) : undefined
+  }).then(function (r) {
+    if (r.status === 401) { localStorage.clear(); location.href = 'login.html'; throw new Error('unauth'); }
+    if (r.status >= 400) {
+      return r.text().then(function (t) {
+        var msg = 'HTTP ' + r.status;
+        try { msg = (JSON.parse(t) || {}).message || msg; } catch (e) { /* 非 JSON */ }
+        throw new Error(msg);
+      });
+    }
+    return raw ? r.text() : r.json();
+  }).then(function (j) {
+    if (raw) return j;
+    if (j && j.code && j.code !== 200) throw new Error(j.message || ('错误 ' + j.code));
+    return j;
+  });
+}
+function GET(p) { return api('GET', p); }
+function POST(p, b) { return api('POST', p, b); }
+function PUT(p, b) { return api('PUT', p, b); }
+function DEL(p) { return api('DELETE', p); }
+function CSV(p) { return api('GET', p, null, true); }
+
+function toast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = err ? '#cf2f4b' : '#2d1a10';
+  t.classList.remove('hidden');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(function () { t.classList.add('hidden'); }, 2600);
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+  });
+}
+function perm(p) {
+  if (PERMS.indexOf('*') >= 0) return true;
+  if (PERMS.indexOf(p) >= 0) return true;
+  if (p.slice(-5) === '.read' && PERMS.indexOf(p.slice(0, -5) + '.*') >= 0) return true;
+  return false;
+}
+
+/* ---------- 格式化 ---------- */
+function fmtMoney(n, noSym) {
+  if (n == null || n === '') return '—';
+  var v = Number(n);
+  var s = Math.abs(v) >= 10000
+    ? v.toLocaleString('zh-CN', {maximumFractionDigits: 2})
+    : v.toFixed(2);
+  return (noSym ? '' : '¥') + s;
+}
+function fmtCents(c, noSym) {
+  if (c == null || c === '') return '—';
+  return fmtMoney(Number(c) / 100, noSym);
+}
+function fmtPct(x, digits) {
+  if (x == null || x === '') return '—';
+  return (Number(x) * 100).toFixed(digits == null ? 0 : digits) + '%';
+}
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
+var NAV = [
+  ['dash', '工作台', '◱'],
+  ['store', '门店管理', '🏪'],
+  ['commodity', '商品管理', '📦'],
+  ['member', '会员管理', '👤'],
+  ['promotion', '促销活动', '🏷'],
+  ['pos', 'POS 收银', '🛒'],
+  ['sales', '销售单据', '🧾'],
+  ['inventory', '库存管理', '❄'],
+  ['purchase', '采购管理', '🚚'],
+  ['supplier', '供应商', '⧉'],
+  ['finance', '财务流水', '💰'],
+  ['risk', '风险预警', '⚠'],
+  ['system', '系统管理', '⚙']
+];
+
+function boot() {
+  if (!TOKEN) { location.href = 'login.html'; return; }
+  GET('/api/me').then(function (r) {
+    ME = r.data || {}; PERMS = ME.perms || [];
+    localStorage.setItem('retail_user', JSON.stringify(ME));
+    document.getElementById('who').textContent = ME.user.name + ' · ' + (ME.user.role || '');
+    var nav = document.getElementById('nav');
+    nav.innerHTML = NAV.map(function (n) {
+      return '<a href="#/' + n[0] + '" data-k="' + n[0] + '">' +
+        '<span class="ic">' + n[2] + '</span>' + n[1] + '</a>';
+    }).join('');
+    nav.onclick = function (e) {
+      var a = e.target.closest('a'); if (!a) return;
+      e.preventDefault();
+      go(a.getAttribute('data-k'));
+    };
+    var key = (location.hash || '#/dash').replace('#/', '');
+    go(PAGES[key] ? key : 'dash');
+    document.getElementById('btn-logout').onclick = function () {
+      POST('/api/logout').then(function () {
+        localStorage.clear(); location.href = 'login.html';
+      }).catch(function () { localStorage.clear(); location.href = 'login.html'; });
+    };
+    window.addEventListener('hashchange', function () {
+      var k = (location.hash || '#/dash').replace('#/', '');
+      if (PAGES[k] && k !== CUR) go(k);
+    });
+    if (perm('retail.risk.read')) {
+      GET('/api/dashboard').then(function (d) {
+        var n = ((d.data || {}).open_risks) || 0;
+        if (!n) return;
+        var a = document.querySelector('#nav a[data-k="risk"]');
+        if (a) a.insertAdjacentHTML('beforeend', '<b class="badge">' + n + '</b>');
+      }).catch(function () {});
+    }
+  }).catch(function (e) {
+    if (e.message !== 'unauth') location.href = 'login.html';
+  });
+}
+
+var CUR = null;
+function go(key) {
+  CUR = key;
+  if (location.hash !== '#/' + key) location.hash = '#/' + key;
+  document.querySelectorAll('#nav a').forEach(function (a) {
+    a.classList.toggle('on', a.getAttribute('data-k') === key);
+  });
+  var main = document.getElementById('main');
+  main.innerHTML = '<div class="empty">加载中…</div>';
+  var task;
+  try {
+    task = PAGES[key](main);
+  } catch (e) {
+    task = Promise.reject(e);
+  }
+  Promise.resolve(task).catch(function (e) {
+    if (e && e.message === 'unauth') return;
+    main.innerHTML = '<div class="empty">加载失败：' + esc(e && e.message) + '</div>';
+  });
+}
+
+function modal(html, wide) {
+  var mask = document.getElementById('modal-mask');
+  var box = document.getElementById('modal');
+  box.innerHTML = html;
+  box.className = 'modal' + (wide ? ' wide' : '');
+  mask.classList.remove('hidden');
+  mask.onclick = function (e) { if (e.target === mask) closeModal(); };
+}
+function closeModal() {
+  document.getElementById('modal-mask').classList.add('hidden');
+}
+
+function table(headers, rows, rowHtml, empty) {
+  if (!rows || !rows.length) return '<div class="empty">' + (empty || '暂无数据') + '</div>';
+  return '<div class="tw"><table><thead><tr>' + headers.map(function (h) {
+    if (h && h.charAt(0) === '~') return '<th class="num">' + h.slice(1) + '</th>';
+    return '<th>' + h + '</th>';
+  }).join('') + '</tr></thead><tbody>' + rows.map(rowHtml).join('') + '</tbody></table></div>';
+}
+
+function tag(text, cls) {
+  return '<span class="tag ' + (cls || '') + '">' + esc(text) + '</span>';
+}
+var SALE_TAG = {'cart': ['购物车', ''], 'paid': ['已支付', 'ok'], 'refunded': ['已退货', 'err'], 'cancelled': ['已取消', 'err']};
+function saleTag(s) {
+  var m = SALE_TAG[s] || [s, ''];
+  return tag(m[0], m[1]);
+}
+var PO_TAG = {'draft': ['草稿', ''], 'submitted': ['已提交', 'pri'], 'received': ['已入库', 'ok'], 'cancelled': ['已取消', 'err']};
+function poTag(s) {
+  var m = PO_TAG[s] || [s, ''];
+  return tag(m[0], m[1]);
+}
+var LEVEL_TAG = {'normal': ['普通会员', ''], 'silver': ['银卡 95折', ''], 'gold': ['金卡 9折', 'pri'], 'platinum': ['铂金 85折', 'ok']};
+function memberTag(l) {
+  var m = LEVEL_TAG[l] || [l, ''];
+  return tag(m[0], m[1]);
+}
+function payTag(t) {
+  var m = {'cash': '现金', 'wechat': '微信', 'alipay': '支付宝', 'balance': '储值'};
+  return tag(m[t] || t, '');
+}
+function levelTag(g) {
+  var m = {'risk': '高风险', 'warn': '警告', 'info': '提示'};
+  return tag(m[g] || g, g === 'risk' ? 'err' : (g === 'warn' ? 'warn' : ''));
+}
+function kpi(v, label, cls) {
+  return '<div class="kpi ' + (cls || '') + '"><b>' + esc(v) + '</b><span>' + esc(label) + '</span></div>';
+}
+function field(label, input, hint) {
+  return '<label class="fld"><span>' + esc(label) + '</span>' + input +
+    (hint ? '<i>' + esc(hint) + '</i>' : '') + '</label>';
+}
+function dl(p, name) {
+  CSV(p).then(function (t) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([t], {type: 'text/csv;charset=utf-8'}));
+    a.download = name || 'export.csv';
+    a.click();
+  }).catch(function (e) { toast(e.message, true); });
+}
+function qs(o) {
+  var k = Object.keys(o || {}).filter(function (x) { return o[x]; });
+  if (!k.length) return '';
+  return '?' + k.map(function (x) { return x + '=' + encodeURIComponent(o[x]); }).join('&');
+}
+
+</script>
+<script>
+/* 飞售零售管理系统 · 页面层 */
+var PAGES = {};
+
+/* ---------- 工作台 ---------- */
+PAGES.dash = function (main) {
+  return GET('/api/dashboard').then(function (r) {
+    var d = r.data || {};
+    main.innerHTML =
+      '<h2>工作台</h2>' +
+      '<div class="kpis">' +
+      kpi(d.sales_today, '今日销售单') +
+      kpi(fmtCents(d.income_cents), '今日营收', 'ok') +
+      kpi(d.members, '会员总数') +
+      kpi(d.active_promotions, '进行中促销', 'pri') +
+      kpi(d.pending_purchase, '待收货采购', d.pending_purchase ? 'warn' : '') +
+      kpi(d.low_stock, '低库存告警', d.low_stock ? 'warn' : '') +
+      kpi(d.near_expiry, '临期批次', d.near_expiry ? 'warn' : '') +
+      kpi(d.open_risks, '未处理风险', d.open_risks ? 'err' : '') +
+      '</div>' +
+      '<div class="grid2">' +
+      '<div class="card"><h3>快捷操作</h3><div class="quick">' +
+      (perm('retail.sales.write') ? '<a class="btn" href="#/pos">POS 收银</a>' : '') +
+      (perm('retail.members.write') ? '<a class="btn ghost" href="#/member">会员登记</a>' : '') +
+      (perm('retail.purchases.write') ? '<a class="btn ghost" href="#/purchase">采购入库</a>' : '') +
+      (perm('retail.promotions.write') ? '<a class="btn ghost" href="#/promotion">创建促销</a>' : '') +
+      '</div></div>' +
+      '<div class="card"><h3>最新销售</h3><div id="dash-sales">加载中…</div></div></div>';
+    return GET('/api/sales').then(function (r2) {
+      var el = document.getElementById('dash-sales');
+      if (el) el.innerHTML = table(['单号', '~实收', '支付', '状态'], (r2.data.items || []).slice(0, 8), function (x) {
+        return '<tr><td>' + esc(x.no) + '</td><td class="num">' + fmtCents(x.paid_cents) + '</td>' +
+          '<td>' + payTag(x.pay_method) + '</td><td>' + saleTag(x.status) + '</td></tr>';
+      }, '暂无销售记录');
+    });
+  });
+};
+
+/* ---------- 门店管理 ---------- */
+PAGES.store = function (main) {
+  main.innerHTML = '<h2>门店管理</h2><div class="toolbar">' +
+    (perm('retail.stores.write') ? '<button class="btn" id="btn-new">新增门店</button>' : '') +
+    '<input id="f-kw" placeholder="名称/编码/地址" class="inp">' +
+    '<button class="btn ghost" id="btn-search">搜索</button></div><div id="list"></div>';
+  function load(kw) {
+    GET('/api/stores' + qs({keyword: kw})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['编码', '名称', '地址', '电话', '状态'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.code || '—') + '</td><td>' + esc(x.name) + '</td>' +
+            '<td>' + esc(x.address || '—') + '</td><td>' + esc(x.phone || '—') + '</td>' +
+            '<td>' + tag(x.status === 'active' ? '营业中' : '停用', x.status === 'active' ? 'ok' : 'err') + '</td></tr>';
+        });
+    });
+  }
+  document.getElementById('btn-search').onclick = function () { load(document.getElementById('f-kw').value.trim()); };
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      modal('<h3>新增门店</h3>' +
+        field('门店编码', '<input id="f-code" placeholder="如 S004">') +
+        field('名称', '<input id="f-name">') +
+        field('地址', '<input id="f-addr">') +
+        field('电话', '<input id="f-phone">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">保存</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>');
+      document.getElementById('btn-ok').onclick = function () {
+        POST('/api/stores', {
+          code: document.getElementById('f-code').value.trim(),
+          name: document.getElementById('f-name').value.trim(),
+          address: document.getElementById('f-addr').value.trim(),
+          phone: document.getElementById('f-phone').value.trim()
+        }).then(function () { toast('已保存'); closeModal(); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+    };
+  load();
+};
+
+/* ---------- 商品管理 ---------- */
+PAGES.commodity = function (main) {
+  main.innerHTML = '<h2>商品管理</h2><div class="toolbar">' +
+    (perm('retail.commodities.write') ? '<button class="btn" id="btn-new">新增商品</button>' : '') +
+    '<input id="f-kw" placeholder="名称/SKU" class="inp">' +
+    '<input id="f-bc" placeholder="条码" class="inp" style="width:150px">' +
+    '<button class="btn ghost" id="btn-search">搜索</button>' +
+    '<button class="btn ghost" id="btn-export">导出 CSV</button></div><div id="list"></div>';
+  document.getElementById('btn-export').onclick = function () { dl('/api/export/commodities', 'commodities.csv'); };
+  function load(kw, bc) {
+    GET('/api/commodities' + qs({keyword: kw, barcode: bc})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['SKU', '条码', '名称', '分类', '~售价', '~进价', '~库存', '~安全库存'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.sku || '') + '</td><td>' + esc(x.barcode || '—') + '</td><td>' + esc(x.name) + '</td>' +
+            '<td>' + esc(x.category || '—') + '</td><td class="num">' + fmtCents(x.price_cents) + '</td>' +
+            '<td class="num">' + fmtCents(x.cost_cents) + '</td>' +
+            '<td class="num">' + (x.stock <= x.safe_stock ? tag(x.stock, 'err') : x.stock) + '</td>' +
+            '<td class="num">' + x.safe_stock + '</td></tr>';
+        });
+    });
+  }
+  document.getElementById('btn-search').onclick = function () {
+    load(document.getElementById('f-kw').value.trim(), document.getElementById('f-bc').value.trim());
+  };
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      modal('<h3>新增商品</h3>' +
+        field('名称', '<input id="f-name">') +
+        field('条码(EAN)', '<input id="f-bc" placeholder="6901234500000">') +
+        field('单位', '<input id="f-unit" value="件">') +
+        field('分类', '<input id="f-cat" placeholder="饮料/零食/日化…">') +
+        field('售价(元)', '<input id="f-price" type="number" step="0.01">') +
+        field('进价(元)', '<input id="f-cost" type="number" step="0.01">') +
+        field('保质期(天)', '<input id="f-shelf" type="number" value="365">') +
+        field('安全库存', '<input id="f-safe" type="number" value="10">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">保存</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>', true);
+      document.getElementById('btn-ok').onclick = function () {
+        POST('/api/commodities', {
+          name: document.getElementById('f-name').value.trim(),
+          barcode: document.getElementById('f-bc').value.trim(),
+          unit: document.getElementById('f-unit').value.trim(),
+          category: document.getElementById('f-cat').value.trim(),
+          price: Number(document.getElementById('f-price').value || 0),
+          cost: Number(document.getElementById('f-cost').value || 0),
+          shelf_life_days: Number(document.getElementById('f-shelf').value || 365),
+          safe_stock: Number(document.getElementById('f-safe').value || 10)
+        }).then(function (r2) { toast('已保存：' + r2.data.sku); closeModal(); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+    };
+  load();
+};
+
+/* ---------- 会员管理 ---------- */
+PAGES.member = function (main) {
+  main.innerHTML = '<h2>会员管理</h2><div class="toolbar">' +
+    (perm('retail.members.write') ? '<button class="btn" id="btn-new">登记会员</button>' : '') +
+    '<input id="f-kw" placeholder="姓名/会员码/手机号" class="inp">' +
+    '<select id="f-level"><option value="">全部等级</option><option value="normal">普通</option>' +
+    '<option value="silver">银卡</option><option value="gold">金卡</option><option value="platinum">铂金</option></select>' +
+    '<button class="btn ghost" id="btn-search">搜索</button>' +
+    '<button class="btn ghost" id="btn-export">导出 CSV</button></div><div id="list"></div>';
+  document.getElementById('btn-export').onclick = function () { dl('/api/export/members', 'members.csv'); };
+  function ops(x) {
+    if (!perm('retail.members.write')) return '—';
+    return '<button class="btn sm ghost" data-rc="' + x.id + '">充值</button>';
+  }
+  function load(kw, lv) {
+    GET('/api/members' + qs({keyword: kw, level: lv})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['会员码', '姓名', '手机号', '等级', '~积分', '~余额', '操作'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.code) + '</td><td>' + esc(x.name) + '</td><td>' + esc(x.phone || '—') + '</td>' +
+            '<td>' + memberTag(x.level) + '</td><td class="num">' + x.points + '</td>' +
+            '<td class="num">' + fmtCents(x.balance_cents) + '</td><td class="ops">' + ops(x) + '</td></tr>';
+        });
+      document.getElementById('list').onclick = function (e) {
+        var b = e.target.closest('button'); if (!b || !b.getAttribute('data-rc')) return;
+        var id = b.getAttribute('data-rc');
+        modal('<h3>会员充值</h3>' +
+          field('充值金额(元)', '<input id="f-amt" type="number" step="0.01" value="100">') +
+          field('备注', '<input id="f-note" placeholder="现金/微信…">') +
+          '<div class="m-foot"><button class="btn" id="btn-ok">确认充值</button>' +
+          '<button class="btn ghost" onclick="closeModal()">取消</button></div>');
+        document.getElementById('btn-ok').onclick = function () {
+          POST('/api/members/' + id + '/recharge', {
+            amount_cents: Math.round(Number(document.getElementById('f-amt').value || 0) * 100),
+            note: document.getElementById('f-note').value.trim()
+          }).then(function (r2) {
+            toast('充值成功，余额 ' + fmtCents(r2.data.balance_cents));
+            closeModal(); load();
+          }).catch(function (e2) { toast(e2.message, true); });
+        };
+      };
+    });
+  }
+  document.getElementById('btn-search').onclick = function () {
+    load(document.getElementById('f-kw').value.trim(), document.getElementById('f-level').value);
+  };
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      modal('<h3>登记会员</h3>' +
+        field('姓名', '<input id="f-name">') +
+        field('手机号', '<input id="f-phone">') +
+        field('等级', '<select id="f-level"><option value="normal">普通</option><option value="silver">银卡（95折）</option>' +
+          '<option value="gold">金卡（9折）</option><option value="platinum">铂金（85折）</option></select>') +
+        field('初始储值(元)', '<input id="f-bal" type="number" step="0.01" value="0">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">保存</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>');
+      document.getElementById('btn-ok').onclick = function () {
+        POST('/api/members', {
+          name: document.getElementById('f-name').value.trim(),
+          phone: document.getElementById('f-phone').value.trim(),
+          level: document.getElementById('f-level').value,
+          balance: Number(document.getElementById('f-bal').value || 0)
+        }).then(function (r2) { toast('登记成功：' + r2.data.code); closeModal(); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+    };
+  load();
+};
+
+/* ---------- 促销活动 ---------- */
+PAGES.promotion = function (main) {
+  main.innerHTML = '<h2>促销活动</h2><div class="toolbar">' +
+    (perm('retail.promotions.write') ? '<button class="btn" id="btn-new">新建促销</button>' : '') +
+    '</div><div id="list"></div>';
+  function load() {
+    GET('/api/promotions').then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['名称', '类型', '规则', '时间窗', '适用门店', '状态'], r.data.items, function (x) {
+          var rule = x.ptype === 'full_off'
+            ? '满 ' + fmtCents(x.threshold_cents) + ' 减 ' + fmtCents(x.off_cents)
+            : (x.rate / 10).toFixed(1) + ' 折';
+          var store = x.store_id ? ('门店 #' + x.store_id) : '全部门店';
+          return '<tr><td>' + esc(x.name) + '</td>' +
+            '<td>' + tag(x.ptype === 'full_off' ? '满减' : '折扣', x.ptype === 'full_off' ? 'pri' : 'ok') + '</td>' +
+            '<td>' + esc(rule) + '</td><td>' + esc(x.start_date) + ' ~ ' + esc(x.end_date) + '</td>' +
+            '<td>' + esc(store) + '</td>' +
+            '<td>' + tag(x.status === 'active' ? '进行中' : '已停用', x.status === 'active' ? 'ok' : '') + '</td></tr>';
+        });
+    });
+  }
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      modal('<h3>新建促销</h3>' +
+        field('名称', '<input id="f-name">') +
+        field('类型', '<select id="f-type"><option value="full_off">满减</option><option value="discount">折扣</option></select>') +
+        field('满减门槛(分)', '<input id="f-th" type="number" value="3000">') +
+        field('满减金额(分)', '<input id="f-off" type="number" value="500">') +
+        field('折扣率(1-99)', '<input id="f-rate" type="number" value="88">') +
+        field('开始日期', '<input id="f-sd" type="date" value="' + todayStr() + '">') +
+        field('结束日期', '<input id="f-ed" type="date" value="2027-12-31">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">保存</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>', true);
+      document.getElementById('btn-ok').onclick = function () {
+        POST('/api/promotions', {
+          name: document.getElementById('f-name').value.trim(),
+          ptype: document.getElementById('f-type').value,
+          threshold_cents: Number(document.getElementById('f-th').value || 0),
+          off_cents: Number(document.getElementById('f-off').value || 0),
+          rate: Number(document.getElementById('f-rate').value || 100),
+          start_date: document.getElementById('f-sd').value,
+          end_date: document.getElementById('f-ed').value
+        }).then(function () { toast('促销已创建'); closeModal(); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+    };
+  load();
+};
+
+/* ---------- POS 收银 ---------- */
+PAGES.pos = function (main) {
+  main.innerHTML = '<h2>POS 收银</h2><div class="grid2">' +
+    '<div class="card"><h3>购物车</h3>' +
+    '<div class="toolbar"><select id="f-store"></select>' +
+    '<select id="f-member"><option value="">散客（无会员）</option></select></div>' +
+    '<div id="cart-items"></div>' +
+    '<div class="toolbar"><button class="btn sm ghost" id="btn-add">＋ 扫码/选商品</button>' +
+    '<button class="btn" id="btn-pay">结账</button></div>' +
+    '<div id="cart-sum" class="pos-sum"></div></div>' +
+    '<div class="card"><h3>最近销售</h3><div id="recent">加载中…</div></div></div>';
+  Promise.all([GET('/api/stores'), GET('/api/members'), GET('/api/commodities')]).then(function (rs) {
+    document.getElementById('f-store').innerHTML = rs[0].data.items.map(function (s) {
+      return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
+    }).join('');
+    document.getElementById('f-member').innerHTML += rs[1].data.items.map(function (m) {
+      return '<option value="' + m.id + '">' + esc(m.name) + '（' + esc(m.code) + ' ' + (LEVEL_TAG[m.level] || [m.level])[0] + '）</option>';
+    }).join('');
+    window._POS_COMMODITIES = rs[2].data.items || [];
+    var n = 0;
+    function addRow(pre) {
+      n++;
+      document.getElementById('cart-items').insertAdjacentHTML('beforeend',
+        '<div class="fld-row" data-row="' + n + '">' +
+        '<select class="i-comm">' + _POS_COMMODITIES.map(function (c) {
+          return '<option value="' + c.id + '" data-price="' + c.price_cents + '">' +
+            esc(c.name) + ' ' + fmtCents(c.price_cents) + '</option>';
+        }).join('') + '</select>' +
+        '<input class="i-qty" type="number" value="' + (pre && pre.qty || 1) + '" min="1" style="width:70px">' +
+        '<button class="btn sm ghost" onclick="this.parentNode.remove()">✕</button></div>');
+    }
+    addRow();
+    window._posAddRow = addRow;
+    document.getElementById('btn-add').onclick = function () { addRow(); };
+    document.getElementById('btn-pay').onclick = function () {
+      var items = [];
+      document.querySelectorAll('#cart-items .fld-row').forEach(function (row) {
+        items.push({
+          commodity_id: Number(row.querySelector('.i-comm').value),
+          qty: Number(row.querySelector('.i-qty').value || 1)
+        });
+      });
+      if (!items.length) return toast('购物车为空', true);
+      var mv = document.getElementById('f-member').value;
+      modal('<h3>结账</h3>' +
+        field('支付方式', '<select id="f-pay"><option value="cash">现金</option><option value="wechat">微信</option>' +
+          '<option value="alipay">支付宝</option><option value="balance">储值余额</option></select>') +
+        field('实收金额(元)', '<input id="f-recv" type="number" step="0.01" placeholder="现金收的可填收款额">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">确认收款</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>');
+      document.getElementById('btn-ok').onclick = function () {
+        var recv = document.getElementById('f-recv').value;
+        POST('/api/sales', {
+          store_id: Number(document.getElementById('f-store').value),
+          member_id: mv ? Number(mv) : null,
+          items: items,
+          pay_method: document.getElementById('f-pay').value,
+          received_cents: recv ? Math.round(Number(recv) * 100) : undefined
+        }).then(function (r2) {
+          var d = r2.data;
+          toast('收款成功 ' + d.no + '，实收 ' + fmtCents(d.paid_cents) +
+            (d.points_earned ? '，积分 +' + d.points_earned : '') +
+            (d.change_cents ? '，找零 ' + fmtCents(d.change_cents) : ''));
+          closeModal();
+          document.getElementById('cart-items').innerHTML = '';
+          n = 0; addRow();
+          go('pos');
+        }).catch(function (e) { toast(e.message, true); });
+      };
+    };
+    return GET('/api/sales').then(function (r3) {
+      document.getElementById('recent').innerHTML = table(
+        ['单号', '~实收', '支付', '状态'], (r3.data.items || []).slice(0, 6), function (x) {
+          return '<tr><td>' + esc(x.no) + '</td><td class="num">' + fmtCents(x.paid_cents) + '</td>' +
+            '<td>' + payTag(x.pay_method) + '</td><td>' + saleTag(x.status) + '</td></tr>';
+        });
+    });
+  });
+};
+
+/* ---------- 销售单据 ---------- */
+PAGES.sales = function (main) {
+  main.innerHTML = '<h2>销售单据</h2><div class="toolbar">' +
+    '<select id="f-status"><option value="">全部状态</option><option value="paid">已支付</option><option value="refunded">已退货</option></select>' +
+    '<button class="btn ghost" id="btn-filter">筛选</button>' +
+    '<button class="btn ghost" id="btn-export">导出 CSV</button></div><div id="list"></div>';
+  document.getElementById('btn-export').onclick = function () { dl('/api/export/sales', 'sales.csv'); };
+  function load(st) {
+    GET('/api/sales' + qs({status: st})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['单号', '时间', '~小计', '~促销优惠', '~会员优惠', '~实收', '支付', '状态', '操作'], r.data.items, function (x) {
+          var ops = (perm('retail.sales.write') && x.status === 'paid')
+            ? '<button class="btn sm ghost" data-ref="' + x.id + '">退货</button>' : '—';
+          return '<tr><td>' + esc(x.no) + '</td><td>' + esc(x.created_at) + '</td>' +
+            '<td class="num">' + fmtCents(x.subtotal_cents) + '</td>' +
+            '<td class="num">' + (x.promo_off_cents ? '−' + fmtCents(x.promo_off_cents) : '—') + '</td>' +
+            '<td class="num">' + (x.member_off_cents ? '−' + fmtCents(x.member_off_cents) : '—') + '</td>' +
+            '<td class="num"><b>' + fmtCents(x.paid_cents) + '</b></td>' +
+            '<td>' + payTag(x.pay_method) + '</td><td>' + saleTag(x.status) + '</td>' +
+            '<td class="ops">' + ops + '</td></tr>';
+        });
+      document.getElementById('list').onclick = function (e) {
+        var b = e.target.closest('button'); if (!b || !b.getAttribute('data-ref')) return;
+        var id = b.getAttribute('data-ref');
+        if (!confirm('确认退货？库存回补、积分冲减、退款走负流水。')) return;
+        POST('/api/sales/' + id + '/refund', {}).then(function (r2) {
+          toast('退货成功：' + r2.data.refund_no + '，退款 ' + fmtCents(r2.data.refund_cents));
+          load(document.getElementById('f-status').value);
+        }).catch(function (e2) { toast(e2.message, true); });
+      };
+    });
+  }
+  document.getElementById('btn-filter').onclick = function () { load(document.getElementById('f-status').value); };
+  load();
+};
+
+/* ---------- 库存管理 ---------- */
+PAGES.inventory = function (main) {
+  main.innerHTML = '<h2>库存管理</h2><div class="toolbar">' +
+    '<select id="f-store"><option value="">全部门店</option></select>' +
+    '<input id="f-kw" placeholder="商品名称" class="inp">' +
+    '<button class="btn ghost" id="btn-search">搜索</button>' +
+    '<button class="btn ghost" id="btn-export">导出 CSV</button></div><div id="list"></div>';
+  document.getElementById('btn-export').onclick = function () { dl('/api/export/inventory', 'inventory.csv'); };
+  GET('/api/stores').then(function (r) {
+    document.getElementById('f-store').innerHTML += r.data.items.map(function (s) {
+      return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
+    }).join('');
+  });
+  function load(sid, kw) {
+    GET('/api/inventory' + qs({store_id: sid, keyword: kw})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['商品', 'SKU', '门店', '批次', '~数量', '效期', '状态'], r.data.items, function (x) {
+          var expSoon = x.expire_at && (new Date(x.expire_at) - new Date()) < 90 * 86400000;
+          return '<tr><td>' + esc(x.commodity_name || x.commodity_id) + '</td><td>' + esc(x.sku || '') + '</td>' +
+            '<td>' + tag('门店 #' + x.store_id, '') + '</td><td>' + esc(x.batch_no) + '</td>' +
+            '<td class="num">' + x.qty + '</td><td>' + esc(x.expire_at || '—') + '</td>' +
+            '<td>' + (expSoon ? tag('临期', 'warn') : tag('正常', 'ok')) + '</td></tr>';
+        });
+    });
+  }
+  document.getElementById('btn-search').onclick = function () {
+    load(document.getElementById('f-store').value, document.getElementById('f-kw').value.trim());
+  };
+  load();
+};
+
+/* ---------- 采购管理 ---------- */
+PAGES.purchase = function (main) {
+  main.innerHTML = '<h2>采购管理</h2><div class="toolbar">' +
+    (perm('retail.purchases.write') ? '<button class="btn" id="btn-new">新建采购单</button>' : '') +
+    '<select id="f-status"><option value="">全部状态</option><option value="draft">草稿</option>' +
+    '<option value="submitted">已提交</option><option value="received">已入库</option></select>' +
+    '<button class="btn ghost" id="btn-filter">筛选</button></div><div id="list"></div>';
+  function actBtn(x) {
+    if (!perm('retail.purchases.write')) return '—';
+    var m = {'draft': [['to_submitted', '提交']],
+             'submitted': [['to_received', '入库确认']]};
+    return (m[x.status] || []).map(function (a) {
+      return '<button class="btn sm ghost" data-id="' + x.id + '" data-act="' + a[0] + '">' + a[1] + '</button>';
+    }).join(' ') || '—';
+  }
+  function load(st) {
+    GET('/api/purchases' + qs({status: st})).then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['采购单号', '时间', '供应商', '~金额', '状态', '操作'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.no) + '</td><td>' + esc(x.created_at) + '</td>' +
+            '<td>' + esc((x.supplier || {}).name || '') + '</td>' +
+            '<td class="num">' + fmtCents(x.total_cents) + '</td><td>' + poTag(x.status) + '</td>' +
+            '<td class="ops">' + actBtn(x) + '</td></tr>';
+        });
+      document.getElementById('list').onclick = function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        POST('/api/purchases/' + b.getAttribute('data-id') + '/transition', {action: b.getAttribute('data-act')})
+          .then(function (r2) {
+            toast(r2.data.status === 'received' ? '入库成功，库存与应付已更新' : '操作成功');
+            load(document.getElementById('f-status').value);
+          }).catch(function (e2) { toast(e2.message, true); });
+      };
+    });
+  }
+  document.getElementById('btn-filter').onclick = function () { load(document.getElementById('f-status').value); };
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      Promise.all([GET('/api/suppliers'), GET('/api/stores'), GET('/api/commodities')]).then(function (rs) {
+        var comms = rs[2].data.items;
+        modal('<h3>新建采购单</h3>' +
+          field('供应商', '<select id="f-sup">' + rs[0].data.items.map(function (s) {
+            return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
+          }).join('') + '</select>') +
+          field('入库门店', '<select id="f-store">' + rs[1].data.items.map(function (s) {
+            return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
+          }).join('') + '</select>') +
+          '<div id="po-items"></div>' +
+          '<div class="toolbar"><button class="btn sm ghost" id="btn-add-item">＋ 添加明细</button></div>' +
+          '<div class="m-foot"><button class="btn" id="btn-ok">保存采购单</button>' +
+          '<button class="btn ghost" onclick="closeModal()">取消</button></div>', true);
+        var n = 0;
+        function addItem() {
+          n++;
+          document.getElementById('po-items').insertAdjacentHTML('beforeend',
+            '<div class="fld-row" data-row="' + n + '">' +
+            '<select class="i-comm">' + comms.map(function (c) {
+              return '<option value="' + c.id + '">' + esc(c.name) + '</option>';
+            }).join('') + '</select>' +
+            '<input class="i-qty" type="number" value="10" min="1" placeholder="数量" style="width:70px">' +
+            '<input class="i-cost" type="number" placeholder="进价(分)" style="width:90px">' +
+            '<input class="i-batch" placeholder="批次" style="width:110px">' +
+            '<input class="i-exp" type="date" style="width:140px">' +
+            '</div>');
+        }
+        addItem();
+        document.getElementById('btn-add-item').onclick = addItem;
+        document.getElementById('btn-ok').onclick = function () {
+          var items = [];
+          document.querySelectorAll('#po-items .fld-row').forEach(function (row) {
+            items.push({
+              commodity_id: Number(row.querySelector('.i-comm').value),
+              qty: Number(row.querySelector('.i-qty').value || 1),
+              cost_cents: Number(row.querySelector('.i-cost').value || 0),
+              batch_no: row.querySelector('.i-batch').value.trim() || null,
+              expiry: row.querySelector('.i-exp').value || null
+            });
+          });
+          POST('/api/purchases', {
+            supplier_id: Number(document.getElementById('f-sup').value),
+            store_id: Number(document.getElementById('f-store').value),
+            items: items
+          }).then(function (r2) {
+            toast('采购单已创建：' + r2.data.no);
+            closeModal(); load();
+          }).catch(function (e) { toast(e.message, true); });
+        };
+      });
+    };
+  load();
+};
+
+/* ---------- 供应商 ---------- */
+PAGES.supplier = function (main) {
+  main.innerHTML = '<h2>供应商管理</h2><div class="toolbar">' +
+    (perm('retail.suppliers.write') ? '<button class="btn" id="btn-new">新增供应商</button>' : '') +
+    '</div><div id="list"></div>';
+  function load() {
+    GET('/api/suppliers').then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['名称', '联系人', '电话', '~账期(天)', '~应付金额', '~欠款上限'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.name) + '</td><td>' + esc(x.contact || '—') + '</td>' +
+            '<td>' + esc(x.phone || '—') + '</td><td class="num">' + x.credit_days + '</td>' +
+            '<td class="num">' + fmtCents(x.payable_cents) + '</td>' +
+            '<td class="num">' + fmtCents(x.debt_limit_cents) + '</td></tr>';
+        });
+    });
+  }
+  if (document.getElementById('btn-new'))
+    document.getElementById('btn-new').onclick = function () {
+      modal('<h3>新增供应商</h3>' +
+        field('名称', '<input id="f-name">') +
+        field('联系人', '<input id="f-contact">') +
+        field('电话', '<input id="f-phone">') +
+        field('账期(天)', '<input id="f-days" type="number" value="30">') +
+        field('欠款上限(元)', '<input id="f-debt" type="number" value="50000">') +
+        '<div class="m-foot"><button class="btn" id="btn-ok">保存</button>' +
+        '<button class="btn ghost" onclick="closeModal()">取消</button></div>');
+      document.getElementById('btn-ok').onclick = function () {
+        POST('/api/suppliers', {
+          name: document.getElementById('f-name').value.trim(),
+          contact: document.getElementById('f-contact').value.trim(),
+          phone: document.getElementById('f-phone').value.trim(),
+          credit_days: Number(document.getElementById('f-days').value || 30),
+          debt_limit_cents: Math.round(Number(document.getElementById('f-debt').value || 0) * 100)
+        }).then(function () { toast('已保存'); closeModal(); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+    };
+  load();
+};
+
+/* ---------- 财务流水 ---------- */
+PAGES.finance = function (main) {
+  main.innerHTML = '<h2>财务流水</h2><div class="toolbar">' +
+    '<button class="btn ghost" id="btn-export">导出 CSV</button></div><div id="sum"></div><div id="list"></div>';
+  document.getElementById('btn-export').onclick = function () { dl('/api/export/transactions', 'transactions.csv'); };
+  Promise.all([GET('/api/finance/summary'), GET('/api/transactions')]).then(function (rs) {
+    var s = rs[0].data, items = rs[1].data.items;
+    var methods = Object.keys(s.by_method || {}).map(function (m) {
+      return kpi(fmtCents(s.by_method[m]), '今日·' + m);
+    }).join('');
+    document.getElementById('sum').innerHTML = '<div class="kpis">' +
+      kpi(fmtCents(s.income_cents), '今日收入', 'ok') +
+      kpi(fmtCents(s.refund_cents), '今日退款', 'err') +
+      kpi(s.sale_count, '销售单') +
+      kpi(s.member_new, '新增会员') + methods + '</div>';
+    var TT = {'income': ['收入', 'ok'], 'expense': ['采购', 'warn'], 'refund': ['退款', 'err']};
+    document.getElementById('list').innerHTML = table(
+      ['时间', '类型', '~金额', '方式', '备注'], items, function (x) {
+        var t = TT[x.ttype] || [x.ttype, ''];
+        return '<tr><td>' + esc(x.created_at) + '</td><td>' + tag(t[0], t[1]) + '</td>' +
+          '<td class="num">' + fmtCents(x.amount_cents) + '</td><td>' + esc(x.pay_method || '—') + '</td>' +
+          '<td>' + esc(x.note || '') + '</td></tr>';
+      });
+  });
+};
+
+/* ---------- 风险预警 ---------- */
+PAGES.risk = function (main) {
+  main.innerHTML = '<h2>风险预警</h2><div class="toolbar">' +
+    (perm('retail.risk.write') ? '<button class="btn" id="btn-scan">立即扫描</button>' : '') +
+    '</div><div id="list"></div>';
+  function load() {
+    GET('/api/risks').then(function (r) {
+      document.getElementById('list').innerHTML = table(
+        ['类型', '标题', '详情', '~评分', '等级', '状态', '操作'], r.data.items, function (x) {
+          var ops = '';
+          if (perm('retail.risk.write') && x.status === 'open')
+            ops = '<button class="btn sm ghost" data-res="' + x.id + '">处理</button>';
+          var rt = {'stock_low': '商品低库存', 'expiry_near': '效期预警', 'negative_margin': '负毛利',
+                    'supplier_overdue': '欠款超限'}[x.rtype] || x.rtype;
+          return '<tr><td>' + esc(rt) + '</td><td>' + esc(x.title) + '</td><td>' + esc(x.detail || '') + '</td>' +
+            '<td class="num">' + x.score + '</td><td>' + levelTag(x.grade) + '</td>' +
+            '<td>' + tag(x.status === 'open' ? '未处理' : '已处理', x.status === 'open' ? 'err' : 'ok') + '</td>' +
+            '<td class="ops">' + (ops || '—') + '</td></tr>';
+        });
+      document.getElementById('list').onclick = function (e) {
+        var b = e.target.closest('button'); if (!b || !b.getAttribute('data-res')) return;
+        PUT('/api/risks/' + b.getAttribute('data-res') + '/resolve', {note: '已人工处理'})
+          .then(function () { toast('已处理'); load(); }).catch(function (e2) { toast(e2.message, true); });
+      };
+    });
+  }
+  if (document.getElementById('btn-scan'))
+    document.getElementById('btn-scan').onclick = function () {
+      POST('/api/risks/scan', {}).then(function (r) {
+        toast('扫描完成，新增 ' + r.data.created + ' 条'); load();
+      }).catch(function (e) { toast(e.message, true); });
+    };
+  load();
+};
+
+/* ---------- 系统管理 ---------- */
+PAGES.system = function (main) {
+  main.innerHTML = '<h2>系统管理</h2><div class="grid2">' +
+    '<div class="card"><h3>用户</h3><div id="users">加载中…</div></div>' +
+    '<div class="card"><h3>公告</h3><div id="notices">加载中…</div></div>' +
+    (perm('*') ? '<div class="card"><h3>API Key（对接外部系统）</h3><div id="keys">加载中…</div></div>' +
+      '<div class="card"><h3>增量同步状态</h3><div id="sync">加载中…</div></div>' : '') +
+    '</div>';
+  GET('/api/users').then(function (r) {
+    document.getElementById('users').innerHTML = table(
+      ['用户名', '姓名', '角色'], r.data.items, function (x) {
+        return '<tr><td>' + esc(x.username) + '</td><td>' + esc(x.name || '') + '</td><td>' + esc(x.role) + '</td></tr>';
+      });
+  }).catch(function () { document.getElementById('users').innerHTML = '<div class="empty">无权限</div>'; });
+  GET('/api/notices').then(function (r) {
+    document.getElementById('notices').innerHTML = (r.data.items || []).map(function (n) {
+      return '<p><b>' + esc(n.title) + '</b><br>' + esc(n.content || '') + '</p>';
+    }).join('') || '<div class="empty">暂无</div>';
+  });
+  if (perm('*')) {
+    GET('/api/api-keys').then(function (r) {
+      document.getElementById('keys').innerHTML =
+        '<div class="toolbar"><button class="btn sm" id="btn-key">生成 Key</button></div>' +
+        table(['名称', '前缀', '权限', '最近使用'], r.data.items, function (x) {
+          return '<tr><td>' + esc(x.name) + '</td><td>' + esc(x.prefix || '') + '</td>' +
+            '<td>' + esc(x.perms) + '</td><td>' + esc(x.last_used || '—') + '</td></tr>';
+        });
+      document.getElementById('btn-key').onclick = function () {
+        POST('/api/api-keys', {name: '外部对接-' + Date.now() % 10000}).then(function (r2) {
+          modal('<h3>API Key 已生成（仅显示一次）</h3><p class="key-line">' + esc(r2.data.key) + '</p>' +
+            '<div class="m-foot"><button class="btn" onclick="closeModal()">我已保存</button></div>');
+        });
+      };
+    });
+    GET('/api/sync?since=0&entities=commodities').then(function (r) {
+      var d = r.data || {};
+      document.getElementById('sync').innerHTML =
+        '<p>同步版本：<b>' + (d.version || 0) + '</b>，本轮变更 <b>' + (d.changes || []).length + '</b> 条</p>' +
+        '<p>支持实体：stores / commodities / members / promotions / sales / inventory / purchases / risks</p>';
+    });
+  }
+};
+
+</script>
+<script>boot();</script>
+</body>
+</html>
